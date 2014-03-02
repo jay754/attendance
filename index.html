@@ -18,28 +18,24 @@
         });
       }
 
-
-
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);      
 
       function drawChart() {
         results = {"Attendance": ["896944", "821490", "819290", "813012", "794320", "788293", "780353", "778877", "765915", "744960", "755700", "746323", "743936", "730616", "721414", "704702", "685412", "683564", "681613", "670070", "669956", "663882", "632913", "628293", "626069", "620146", "616469", "606094", "565930", "563743"], "Teams": ["Bulls", "Mavericks", "Heat", "TrailBlazers", "Warriors", "Clippers", "NYKnicks", "Lakers", "Jazz", "Celtics", "Spurs", "Thunder", "Raptors", "Nuggets", "Magic", "Nets", "76ers", "Rockets", "Grizzlies", "Wizards", "Timberwolves", "Cavaliers", "Suns", "Bobcats", "Pacers", "Hawks", "Bucks", "Pistons", "Pelicans", "Kings"]}
 
-          var associative_array= new Object();
-
-          for(var i=0;i<results.Attendance.length;i++){
-            associative_array[results.Teams[i]]=results.Attendance[i];
-          }
-
           //console.log(results.Attendance.length);
           //console.log(results.Teams.length);
 
           //console.log(associative_array);
 
-        var data = google.visualization.arrayToDataTable([
-          ['Team', 'Number of Fans Per Game'],
-        ]);
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Teams');
+        data.addColumn('number', 'Number of Fans Per Game');
+          
+        for(var i=0;i<results.Attendance.length;i++){
+          data.addRow([results.Teams[i], parseInt(results.Attendance[i])]);
+        }
 
         var options = {
           title: 'NBA Attendance 2013'
