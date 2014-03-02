@@ -7,4 +7,4 @@ Usage
 	$ cd NBA-Attendance-2013
 	$ open index.html
 
-<a href="http://jay754.com/nba/"> <h3> Demo </h3> </a>
+<h3> <a href="http://jay754.com/nba/"> Demo </a> </h3>
