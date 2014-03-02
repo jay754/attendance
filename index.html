@@ -31,7 +31,7 @@
 
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Teams');
-        data.addColumn('number', 'Number of Fans Per Game');
+        data.addColumn('number', 'Total Number of Attendance Per Team');
           
         for(var i=0;i<results.Attendance.length;i++){
           data.addRow([results.Teams[i], parseInt(results.Attendance[i])]);
