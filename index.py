@@ -6,7 +6,7 @@ try:
 except ImportError:
     import simplejson as json
 
-#total attedance class
+#total attedance class for NBA 2014
 
 class attendance:
 
@@ -14,17 +14,36 @@ class attendance:
 		self.url = "http://espn.go.com/nba/attendance/_/year/2013"
 
 	def getUrl(self):
+		"""
+		
+		A setter for thr url
+		
+		"""
+
 		return self.url
 
 	def getData(self):
+		"""
+
+		Getting the Actual Data from the Espn Url
+
+		"""
+		
 		results = urllib2.urlopen(self.url)
 		soup = bs(results)
 		data = [str(i.get_text()) for i in soup.find_all("td")]
-		actual_data = data[17:]
+		actual_data = data[17:] #everything before the 17th element is useless data
 
 		return actual_data
 
 	def getOnlyNums(self):
+		"""
+
+		Had to Get only numbers data for the total attendance.
+		All the data wasn't only numbers. So I had to filter out the Team names and only keep the numbers
+
+		"""
+
 		nums = []
 
 		for i in self.getData():
@@ -39,6 +58,13 @@ class attendance:
 		return nums
 
 	def getTeams(self):
+		"""
+
+		Returns all the teams in order from the most fans that attenended the games
+		This is method was a little broken had to manually insert 76ers into the array
+
+		"""
+
 		names = []
 
 		for i in self.getData():
@@ -51,6 +77,13 @@ class attendance:
 		return names
 
 	def sanitizeData(self):
+		"""
+
+		Had to sanitize the numbers, because all of them contained commas, and decimals.
+		You have to do this in order to convert from a String to an Integer
+
+		"""
+
 		attendance = []
 
 		for i in self.getOnlyNums():
@@ -61,6 +94,12 @@ class attendance:
 		return attendance
 
 	def getAttendance(self):
+		"""
+
+		Get the total attendance for each team
+
+		"""
+
 		attendance = []
 
 		for i in self.sanitizeData():
@@ -71,6 +110,11 @@ class attendance:
 		return attendance
 
 	def organizeData(self):
+		"""
+
+		Pass of the data into a dictionary so later on I can convert into a JSON file
+
+		"""
 
 		data = {
 				"Teams" : self.getTeams(),
@@ -82,24 +126,18 @@ class attendance:
 #end of the main class
 
 def main():
-	atteOBJ = attendance()
-	data = atteOBJ.organizeData()
-	#json_data = ""
+	"""
 
-	#json_data += "{"
+	The main method for running the whole class
+	Will print out a json dictionary for the team names and Total Attendance
 
-	#print data["Teams"]
+	"""
 
-	'''for i in data["Teams"]:
-		json_data += "Team:" + i + "\n"
-
-	for i in data["Attendance"]:
-		json_data += "Attendance:" + i + "\n"'''
-
-	#json_data += "}"
-
-	#str(json_data)
+	atteOBJ = attendance() #object
+	data = atteOBJ.organizeData() #the dictionary data
+	
 	with open('data.json', 'w') as outfile:
   		json.dump(data, outfile)
+
 if __name__ == '__main__':
 	main()
