@@ -11,16 +11,16 @@ except ImportError:
 
 class attendance:
 
-	def __init__(self):
-		self.url = "http://espn.go.com/nba/attendance/_/year/2013"
+    def __init__(self):
+        self.url = "http://espn.go.com/nba/attendance/_/year/2013"
 
-	def getUrl(self):
-		"""
-		A setter for thr url
-		"""
-		return self.url
+    def getUrl(self):
+        """
+        A setter for thr url
+        """
+        return self.url
 
-	def check_request(self, url):
+    def check_request(self, url):
         """
         To check the http status of the url
         """
@@ -29,108 +29,108 @@ class attendance:
 
         return http_status
 
-	def getData(self):
+    def getData(self):
 		"""
 		Getting the Actual Data from the Espn Url
 		"""
 
         if self.check_request(self.url) == 200:
-        	results = urllib2.urlopen(self.url)
-        	soup = bs(results)
-        	data = [str(i.get_text()) for i in soup.find_all("td")]
-        	actual_data = data[17:] #everything before the 17th element is useless data
+       	    results = urllib2.urlopen(self.url)
+            soup = bs(results)
+            data = [str(i.get_text()) for i in soup.find_all("td")]
+            actual_data = data[17:] #everything before the 17th element is useless data
 
 		    return actual_data
 
         else:
-        	return "bad request"
+            return "bad request"
 
-	def getOnlyNums(self):
-		"""
-		Had to Get only numbers data for the total attendance.
-		All the data wasn't only numbers. So I had to filter out the Team names and only keep the numbers
-		"""
+   def getOnlyNums(self):
+        """
+        Had to Get only numbers data for the total attendance.
+        All the data wasn't only numbers. So I had to filter out the Team names and only keep the numbers
+        """
 
-		nums = []
+        nums = []
 
-		for i in self.getData():
+        for i in self.getData():
 		    j = i.replace(" ", "")
-		    if j.isalpha():
-		    	pass
-		    else:
-		    	nums.append(j)
+            if j.isalpha():
+                pass
+            else:
+                nums.append(j)
 
-		return nums
+            return nums
 
-	def getTeams(self):
-		"""
-		Returns all the teams in order from the most fans that attenended the games
-		This is method was a little broken had to manually insert 76ers into the array
-		"""
+    def getTeams(self):
+        """
+        Returns all the teams in order from the most fans that attenended the games
+        This is method was a little broken had to manually insert 76ers into the array
+        """
 
-		names = []
+        names = []
 
-		for i in self.getData():
-		    j = i.replace(" ", "")
-		    if j.isalpha():
-		    	names.append(j)
+        for i in self.getData():
+            j = i.replace(" ", "")
+            if j.isalpha():
+                names.append(j)
 
-		names.insert(16, "76ers")
+        names.insert(16, "76ers")
 
-		return names
+        return names
 
-	def sanitizeData(self):
-		"""
-		Had to sanitize the numbers, because all of them contained commas, and decimals.
-		You have to do this in order to convert from a String to an Integer
-		"""
+    def sanitizeData(self):
+        """
+	    Had to sanitize the numbers, because all of them contained commas, and decimals.
+	    You have to do this in order to convert from a String to an Integer
+	    """
 
-		attendance = []
+        attendance = []
 
-		for i in self.getOnlyNums():
-			striped_comma = i.replace(",", "")
-			striped_decimal = striped_comma.replace(".", "")
-			attendance.append(striped_decimal)
+        for i in self.getOnlyNums():
+            striped_comma = i.replace(",", "")
+            striped_decimal = striped_comma.replace(".", "")
+            attendance.append(striped_decimal)
 
-		return attendance
+            return attendance
 
-	def getAttendance(self):
-		"""
-		Gets the total attendance for each team
-		"""
-		
-		attendance = []
+    def getAttendance(self):
+        """
+        Gets the total attendance for each team
+        """
 
-		for i in self.sanitizeData():
-		    if i != "76ers":
-		        if int(i) > 500000:
-		            attendance.append(i)
+        attendance = []
 
-		return attendance
+        for i in self.sanitizeData():
+            if i != "76ers":
+                if int(i) > 500000:
+                    attendance.append(i)
 
-	def organizeData(self):
+        return attendance
+
+    def organizeData(self):
 		"""
 		Pass of the data into a dictionary so later on I can convert into a JSON file
 		"""
 
-		data = {"Teams" : self.getTeams(),
-		        "Attendance": self.getAttendance()}
+        data = {"Teams" : self.getTeams(),
+                "Attendance": self.getAttendance()}
 
-		return data
+        return data
 
 #end of the main class
 
 def main():
-	"""
-	The main method for running the whole class
-	Will print out a json dictionary for the team names and Total Attendance
-	"""
+    """
+    The main method for running the whole class
+    Will print out a json dictionary for the team names and Total Attendance
+    """
 
-	atteOBJ = attendance() #object
-	data = atteOBJ.organizeData() #the dictionary data
+    atteOBJ = attendance() #object
+    data = atteOBJ.organizeData() #the dictionary data
 
-	with open('data.json', 'w') as outfile:
-  		json.dump(data, outfile)
+    with open('data.json', 'w') as outfile:
+        json.dump(data, outfile)
 
 if __name__ == '__main__':
-	main()
+    main()
