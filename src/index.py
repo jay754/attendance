@@ -54,7 +54,7 @@ class attendance:
         nums = []
 
         for i in self.getData():
-		    j = i.replace(" ", "")
+            j = i.replace(" ", "")
             if j.isalpha():
                 pass
             else:
