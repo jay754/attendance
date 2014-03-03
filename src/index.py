@@ -42,9 +42,9 @@ class attendance:
 		for i in self.getData():
 		    j = i.replace(" ", "")
 		    if j.isalpha():
-			    pass
-			else:
-			    nums.append(j)
+		    	pass
+		    else:
+		    	nums.append(j)
 
 		return nums
 
@@ -59,7 +59,7 @@ class attendance:
 		for i in self.getData():
 		    j = i.replace(" ", "")
 		    if j.isalpha():
-			    names.append(j)
+		    	names.append(j)
 
 		names.insert(16, "76ers")
 
