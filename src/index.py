@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import urllib2
+import requests
 
 try:
     import json
@@ -19,17 +20,30 @@ class attendance:
 		"""
 		return self.url
 
+	def check_request(self, url):
+        """
+        To check the http status of the url
+        """
+        r = requests(url)
+        http_status = r.status_code
+
+        return http_status
+
 	def getData(self):
 		"""
 		Getting the Actual Data from the Espn Url
 		"""
 
-		results = urllib2.urlopen(self.url)
-		soup = bs(results)
-		data = [str(i.get_text()) for i in soup.find_all("td")]
-		actual_data = data[17:] #everything before the 17th element is useless data
+        if self.check_request(self.url) == 200:
+        	results = urllib2.urlopen(self.url)
+        	soup = bs(results)
+        	data = [str(i.get_text()) for i in soup.find_all("td")]
+        	actual_data = data[17:] #everything before the 17th element is useless data
 
-		return actual_data
+		    return actual_data
+
+        else:
+        	return "bad request"
 
 	def getOnlyNums(self):
 		"""
