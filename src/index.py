@@ -44,7 +44,7 @@ class attendance:
 			if j.isalpha():
 				pass
 			else:
-				nums.append(j)
+			    nums.append(j)
 
 		return nums
 
@@ -88,9 +88,9 @@ class attendance:
 		attendance = []
 
 		for i in self.sanitizeData():
-			if i != "76ers":
-				if int(i) > 500000:
-					attendance.append(i)
+		    if i != "76ers":
+		        if int(i) > 500000:
+		            attendance.append(i)
 
 		return attendance
 
