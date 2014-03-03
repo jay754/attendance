@@ -30,9 +30,9 @@ class attendance:
         return http_status
 
     def getData(self):
-		"""
-		Getting the Actual Data from the Espn Url
-		"""
+        """
+        Getting the Actual Data from the Espn Url
+        """
 
         if self.check_request(self.url) == 200:
        	    results = urllib2.urlopen(self.url)
@@ -81,9 +81,9 @@ class attendance:
 
     def sanitizeData(self):
         """
-	    Had to sanitize the numbers, because all of them contained commas, and decimals.
-	    You have to do this in order to convert from a String to an Integer
-	    """
+        Had to sanitize the numbers, because all of them contained commas, and decimals.
+        You have to do this in order to convert from a String to an Integer
+        """
 
         attendance = []
 
@@ -109,9 +109,9 @@ class attendance:
         return attendance
 
     def organizeData(self):
-		"""
-		Pass of the data into a dictionary so later on I can convert into a JSON file
-		"""
+        """
+        Pass of the data into a dictionary so later on I can convert into a JSON file
+        """
 
         data = {"Teams" : self.getTeams(),
                 "Attendance": self.getAttendance()}
