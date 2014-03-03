@@ -40,7 +40,7 @@ class attendance:
             data = [str(i.get_text()) for i in soup.find_all("td")]
             actual_data = data[17:] #everything before the 17th element is useless data
 
-		    return actual_data
+            return actual_data
 
         else:
             return "bad request"
