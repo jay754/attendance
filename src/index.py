@@ -60,7 +60,7 @@ class attendance:
             else:
                 nums.append(j)
 
-            return nums
+        return nums
 
     def getTeams(self):
         """
@@ -92,7 +92,7 @@ class attendance:
             striped_decimal = striped_comma.replace(".", "")
             attendance.append(striped_decimal)
 
-            return attendance
+        return attendance
 
     def getAttendance(self):
         """
