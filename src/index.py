@@ -9,43 +9,43 @@ except ImportError:
 
 #total attedance class for NBA 2014
 
-class attendance:
+class Attendance:
 
     def __init__(self):
         self.url = "http://espn.go.com/nba/attendance/_/year/2013"
+        self.data = []
 
-    def getUrl(self):
+    def get_url(self):
         """
         A setter for thr url
         """
+
         return self.url
 
     def check_request(self, url):
         """
         To check the http status of the url
         """
-        r = requests(url)
-        http_status = r.status_code
 
-        return http_status
+        return requests.get(url).status_code
 
-    def getData(self):
+    def get_data(self):
         """
         Getting the Actual Data from the Espn Url
         """
 
-        if self.check_request(self.url) == 200:
-       	    results = urllib2.urlopen(self.url)
-            soup = bs(results)
+        http_status = self.check_request(self.url)
+
+        if http_status is None:
+            return http_status
+        elif http_status is not None and http_status == 200:
+            soup = bs(urllib2.urlopen(self.url))
             data = [str(i.get_text()) for i in soup.find_all("td")]
-            actual_data = data[17:] #everything before the 17th element is useless data
-
-            return actual_data
-
+            return data[17:]
         else:
-            return "bad request"
+            return -1
 
-   def getOnlyNums(self):
+    def get_nums(self):
         """
         Had to Get only numbers data for the total attendance.
         All the data wasn't only numbers. So I had to filter out the Team names and only keep the numbers
@@ -57,12 +57,12 @@ class attendance:
             j = i.replace(" ", "")
             if j.isalpha():
                 pass
-            else:
-                nums.append(j)
+        else:
+            nums.append(j)
 
         return nums
 
-    def getTeams(self):
+    def get_teams(self):
         """
         Returns all the teams in order from the most fans that attenended the games
         This is method was a little broken had to manually insert 76ers into the array
@@ -79,7 +79,7 @@ class attendance:
 
         return names
 
-    def sanitizeData(self):
+    def sanitize_data(self):
         """
         Had to sanitize the numbers, because all of them contained commas, and decimals.
         You have to do this in order to convert from a String to an Integer
@@ -94,7 +94,7 @@ class attendance:
 
         return attendance
 
-    def getAttendance(self):
+    def get_attendance(self):
         """
         Gets the total attendance for each team
         """
@@ -102,7 +102,7 @@ class attendance:
         attendance = []
 
         for i in self.sanitizeData():
-            if i != "76ers":
+            if i is not "76ers":
                 if int(i) > 500000:
                     attendance.append(i)
 
@@ -118,19 +118,19 @@ class attendance:
 
         return data
 
-#end of the main class
+# def main():
+#     """
+#     The main method for running the whole class
+#     Will print out a json dictionary for the team names and Total Attendance
+#     """
 
-def main():
-    """
-    The main method for running the whole class
-    Will print out a json dictionary for the team names and Total Attendance
-    """
+#     atteOBJ = attendance() #object
+#     data = atteOBJ.organizeData() #the dictionary data
 
-    atteOBJ = attendance() #object
-    data = atteOBJ.organizeData() #the dictionary data
-
-    with open('data.json', 'w') as outfile:
-        json.dump(data, outfile)
+#     with open('data.json', 'w') as outfile:
+#         json.dump(data, outfile)
 
 if __name__ == '__main__':
-    main()
+    attaOBJ = Attendance()
+    print attaOBJ.check_request("http://espn.go.com/nba/attendance/_/year/2013")
+    print attaOBJ.get_data()
