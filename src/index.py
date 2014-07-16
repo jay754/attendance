@@ -9,11 +9,12 @@ except ImportError:
 
 #total attedance class for NBA 2014
 
+class JsonError(Exception): pass
+
 class Attendance:
 
     def __init__(self, url=None):
         self.url = url
-        self.data = []
 
     def get_url(self):
         """
@@ -90,7 +91,7 @@ class Attendance:
 
         if self.sanitize_data( is not None:
             for i in self.sanitize_data():
-                if i != "76ers":
+                if i not "76ers" and not in attendance:
                     if int(i) > 500000:
                         attendance.append(i)
 
@@ -101,8 +102,16 @@ class Attendance:
         Pass of the data into a dictionary so later on I can convert into a JSON file
         """
 
-        data = {"Teams" : self.get_teams(),
-                "Attendance": self.get_attendance()}
+        if self.get_teams() not None:
+            teams = self.get_teams()
+
+        if self.get_attendance() not None:
+            attendance = self.get_attendance()
+
+        data = {
+                "Teams" : teams,
+                "Attendance": attendance
+                }
 
         return data
 
@@ -112,10 +121,13 @@ def main():
     Will print out a json dictionary for the team names and Total Attendance
     """
 
-    atteOBJ = attendance() #object
-    data = atteOBJ.organizeData()
+    try:
+        atteOBJ = attendance() #object
+        data = atteOBJ.organizeData()
 
-    with open('data.json', 'w') as outfile:
-        json.dump(data, outfile)
+        with open('data.json', 'w') as outfile:
+            json.dump(data, outfile)
+    except:
+        raise JsonError
 
 if __name__ == '__main__': main()
