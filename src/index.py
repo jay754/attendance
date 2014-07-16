@@ -11,8 +11,8 @@ except ImportError:
 
 class Attendance:
 
-    def __init__(self):
-        self.url = "http://espn.go.com/nba/attendance/_/year/2013"
+    def __init__(self, url=None):
+        self.url = url
         self.data = []
 
     def get_url(self):
@@ -37,7 +37,7 @@ class Attendance:
         http_status = self.check_request(self.url)
 
         if http_status is None:
-            return http_status
+            return None
         elif http_status is not None and http_status == 200:
             soup = bs(urllib2.urlopen(self.url))
             data = [str(i.get_text()) for i in soup.find_all("td")]
@@ -51,15 +51,9 @@ class Attendance:
         All the data wasn't only numbers. So I had to filter out the Team names and only keep the numbers
         """
 
-        nums = []
-
-        for i in self.getData():
-            j = i.replace(" ", "")
-            if j.isalpha():
-                pass
-        else:
-            nums.append(j)
-
+        if self.get_data() is not None:
+            nums = [i.replace(" ", "") for i in self.get_data() if not i.isalpha()]
+        
         return nums
 
     def get_teams(self):
@@ -68,12 +62,8 @@ class Attendance:
         This is method was a little broken had to manually insert 76ers into the array
         """
 
-        names = []
-
-        for i in self.getData():
-            j = i.replace(" ", "")
-            if j.isalpha():
-                names.append(j)
+        if self.get_data() is not None:
+            names = [i.replace(" ", "") for i in self.get_data() if i.isalpha()]
 
         names.insert(16, "76ers")
 
@@ -85,12 +75,9 @@ class Attendance:
         You have to do this in order to convert from a String to an Integer
         """
 
-        attendance = []
-
-        for i in self.getOnlyNums():
-            striped_comma = i.replace(",", "")
-            striped_decimal = striped_comma.replace(".", "")
-            attendance.append(striped_decimal)
+        if self.get_nums() is not None:
+            striped_comma = [i.replace(",", "") for i in self.get_nums()]
+            attendance = [i.replace(".", "") for i in striped_comma]
 
         return attendance
 
@@ -101,36 +88,34 @@ class Attendance:
 
         attendance = []
 
-        for i in self.sanitizeData():
-            if i is not "76ers":
-                if int(i) > 500000:
-                    attendance.append(i)
+        if self.sanitize_data( is not None:
+            for i in self.sanitize_data():
+                if i != "76ers":
+                    if int(i) > 500000:
+                        attendance.append(i)
 
         return attendance
 
-    def organizeData(self):
+    def organize_data(self):
         """
         Pass of the data into a dictionary so later on I can convert into a JSON file
         """
 
-        data = {"Teams" : self.getTeams(),
-                "Attendance": self.getAttendance()}
+        data = {"Teams" : self.get_teams(),
+                "Attendance": self.get_attendance()}
 
         return data
 
-# def main():
-#     """
-#     The main method for running the whole class
-#     Will print out a json dictionary for the team names and Total Attendance
-#     """
+def main():
+    """
+    The main method for running the whole class
+    Will print out a json dictionary for the team names and Total Attendance
+    """
 
-#     atteOBJ = attendance() #object
-#     data = atteOBJ.organizeData() #the dictionary data
+    atteOBJ = attendance() #object
+    data = atteOBJ.organizeData()
 
-#     with open('data.json', 'w') as outfile:
-#         json.dump(data, outfile)
+    with open('data.json', 'w') as outfile:
+        json.dump(data, outfile)
 
-if __name__ == '__main__':
-    attaOBJ = Attendance()
-    print attaOBJ.check_request("http://espn.go.com/nba/attendance/_/year/2013")
-    print attaOBJ.get_data()
+if __name__ == '__main__': main()
