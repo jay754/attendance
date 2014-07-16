@@ -1,17 +1,12 @@
 from bs4 import BeautifulSoup as bs
+from Exceptions import *
+
+import json
 import urllib2
 import requests
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
 
-#total attedance class for NBA 2014
-
-class JsonError(Exception): pass
-
-class Attendance:
+class Attendance(object):
 
     def __init__(self, url=None):
         self.url = url
@@ -47,10 +42,6 @@ class Attendance:
             return -1
 
     def get_nums(self):
-        """
-        Had to Get only numbers data for the total attendance.
-        All the data wasn't only numbers. So I had to filter out the Team names and only keep the numbers
-        """
 
         if self.get_data() is not None:
             nums = [i.replace(" ", "") for i in self.get_data() if not i.isalpha()]
@@ -58,10 +49,6 @@ class Attendance:
         return nums
 
     def get_teams(self):
-        """
-        Returns all the teams in order from the most fans that attenended the games
-        This is method was a little broken had to manually insert 76ers into the array
-        """
 
         if self.get_data() is not None:
             names = [i.replace(" ", "") for i in self.get_data() if i.isalpha()]
@@ -71,10 +58,6 @@ class Attendance:
         return names
 
     def sanitize_data(self):
-        """
-        Had to sanitize the numbers, because all of them contained commas, and decimals.
-        You have to do this in order to convert from a String to an Integer
-        """
 
         if self.get_nums() is not None:
             striped_comma = [i.replace(",", "") for i in self.get_nums()]
@@ -83,13 +66,10 @@ class Attendance:
         return attendance
 
     def get_attendance(self):
-        """
-        Gets the total attendance for each team
-        """
 
         attendance = []
 
-        if self.sanitize_data( is not None:
+        if self.sanitize_data() is not None:
             for i in self.sanitize_data():
                 if i not "76ers" and not in attendance:
                     if int(i) > 500000:
@@ -98,9 +78,6 @@ class Attendance:
         return attendance
 
     def organize_data(self):
-        """
-        Pass of the data into a dictionary so later on I can convert into a JSON file
-        """
 
         if self.get_teams() not None:
             teams = self.get_teams()
@@ -108,23 +85,17 @@ class Attendance:
         if self.get_attendance() not None:
             attendance = self.get_attendance()
 
-        data = {
+        data = dict(
                 "Teams" : teams,
                 "Attendance": attendance
-                }
+                )
 
         return data
 
 def main():
-    """
-    The main method for running the whole class
-    Will print out a json dictionary for the team names and Total Attendance
-    """
-
     try:
-        atteOBJ = attendance() #object
+        atteOBJ = attendance()
         data = atteOBJ.organizeData()
-
         with open('data.json', 'w') as outfile:
             json.dump(data, outfile)
     except:
