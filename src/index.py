@@ -67,13 +67,13 @@ class Attendance(object):
 
     def get_attendance(self):
 
-        attendance = []
+        attendance = set()
 
         if self.sanitize_data() is not None:
             for i in self.sanitize_data():
-                if i not "76ers" and not in attendance:
+                if i not "76ers":
                     if int(i) > 500000:
-                        attendance.append(i)
+                        attendance.add(i)
 
         return attendance
 
