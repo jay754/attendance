@@ -36,13 +36,11 @@ class Attendance(object):
                            for i in self.get_data() if i.isalpha()]
 
         names.insert(16, "76ers")
-
         return names
 
     def sanitize_data(self):
         striped_comma = [i.replace(",", "") for i in self.get_nums()]
         attendance = [i.replace(".", "") for i in striped_comma]
-
         return attendance
 
     def get_attendance(self):
