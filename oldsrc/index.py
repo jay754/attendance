@@ -8,7 +8,7 @@ import requests
 class Attendance(object):
 
     def __init__(self):
-        self.url = "http://espn.go.com/nba/attendance/_/year/2013"
+        self.url = "http://espn.go.com/nba/attendance//year/2013"
 
     def check_request(self, url):
         return requests.get(url).status_code
